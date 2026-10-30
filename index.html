@@ -107,6 +107,9 @@
 
   /* NOTES */
   .item-note  { font-size: 12px; color: #64748b; margin-top: 4px; line-height: 1.5; }
+  .item-warning { background:#fef2f2; border:2px solid #dc2626; border-left:6px solid #dc2626; border-radius:6px; padding:8px 12px; margin:6px 0 8px; }
+  .item-warning-line { font-size:13.5px; font-weight:700; color:#991b1b; line-height:1.45; }
+  .item-warning-line + .item-warning-line { margin-top:6px; padding-top:6px; border-top:1px dashed #fca5a5; }
   .item-special { font-size: 12px; color: #78350f; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 4px 4px 0; padding: 4px 8px; margin-top: 4px; line-height: 1.5; }
   .protocol-highlight { display:inline-block; background:#fef08a; color:#713f12; font-weight:600; border-radius:3px; padding:0 4px; margin-top:2px; }
   .item-acr { font-size: 12px; color: #92400e; background: #fffbeb; border-left: 3px solid #fbbf24; border-radius: 0 4px 4px 0; padding: 4px 8px; margin-top: 4px; }
@@ -506,6 +509,26 @@
 //         oral_type, labs, arrival, slot, notes, source ("atrius"|"acr"),
 //         special, dual_order
 // â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+// Thyroid cancer mets/recurrence protocol note (source: Thyroid Cancer Surveillance Protocol Note, 10/28/2026).
+// Default is WITH IV contrast, unless ordered W/O. Shared by all thyroid cancer entries so every card shows the same guidance.
+const THYROID_CA_NOTE =
+  "⚠ VERIFY IV CONTRAST IS NOT CONTRAINDICATED: confirm no radioiodine (RAI) imaging or therapy is planned — iodinated contrast may interfere with RAI imaging or treatment. If uncertain, check with the radiologist/endocrinologist before giving contrast.\n" +
+  "⚠ IF ORDERED W/O IV CONTRAST: perform W/O — do NOT change to W/ contrast unless checked with the radiologist first.\n" +
+  "\nClinical scenario: history of differentiated thyroid cancer treated with thyroidectomy and remnant ablation. Rising thyroglobulin antibodies (TgAb) with a negative neck ultrasound. Evaluate for recurrent or metastatic disease.\n" +
+  "\nProtocol (W/ IV contrast, when not contraindicated):\n" +
+  "• CT Soft Tissue Neck W/ IV Contrast (70491): evaluate for cervical nodal recurrence and deep neck disease not visible on ultrasound.\n" +
+  "• CT Chest W/ IV Contrast: thin-section lung reconstructions (≤1 mm preferred) for detection of pulmonary metastases.\n" +
+  "\nProtocol considerations:\n" +
+  "• Do not automatically convert noncontrast studies to contrast-enhanced CT.\n" +
+  "• Verify whether future radioiodine imaging or therapy is planned before administering iodinated contrast.\n" +
+  "• Consider radiologist/endocrinologist consultation when iodine exposure could affect subsequent management.\n" +
+  "\nSuggested workflow:\n" +
+  "1. Review thyroid cancer history.\n" +
+  "2. Determine whether upcoming radioiodine imaging or treatment is anticipated.\n" +
+  "3. Discuss with the radiologist if contrast use is uncertain.\n" +
+  "4. If approved, perform CT Neck W/ IV Contrast and CT Chest with thin lung reconstructions.";
+const THYROID_CA_KEYWORDS = "thyroid mets, thyroid cancer mets, metastatic thyroid cancer, metastasis, metastases, metastatic, mets, recurrence, recurrent, thyroglobulin, tg, tgab, papillary, follicular, differentiated thyroid cancer";
+
 let protocols = [
 
   // â"€â"€ HEAD / FACIAL â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
@@ -689,14 +712,15 @@ let protocols = [
     notes:"No contrast for thyroid/goiter evaluation.", source:"atrius" },
 
   { indication:"Thyroid Cancer (Pre-Radioactive Iodine Treatment)", category:"head", epic_order:"Neck Soft Tissue CT W/O Contrast", epic_id:"70486MF", protocol_button:"SOFT TISSUE NECK", cpt:"70486",
-    iv:"none", oral:"none", labs:false, arrival:20, slot:20,
-    notes:"No IV contrast \u2014 iodinated contrast is contraindicated before radioactive iodine therapy. Use non-contrast neck protocol.", source:"atrius",
-    special:"IF ORDERED W/O IV CONTRAST, DO NOT CHANGE TO W/ CONTRAST UNLESS CHECKED WITH THE RADIOLOGIST FIRST. No iodinated contrast before RAI treatment. Confirm with ordering provider if contrast-free neck protocol is appropriate. For surveillance with rising Tg antibodies, see Thyroid Cancer Surveillance." },
+    iv:"none", oral:"none", labs:false, arrival:20, slot:20, lockNote:true,
+    notes:"", source:"atrius",
+    special:"⚠ NO IV CONTRAST — iodinated contrast is contraindicated before radioactive iodine (RAI) imaging or therapy. Use non-contrast neck protocol. Do NOT change to W/ contrast unless checked with the radiologist first.\nConfirm with ordering provider if contrast-free neck protocol is appropriate.\nFor thyroid cancer mets/recurrence surveillance (no RAI planned), see Thyroid Cancer Mets / Recurrence Surveillance (Neck W/ contrast + Chest W/ contrast)." },
 
-  { indication:"Thyroid Cancer Surveillance - Rising Tg Antibodies (TgAb) / Negative Neck US / Recurrence", category:"head", epic_order:"Neck Soft Tissue CT W/O Contrast", epic_id:"70486MF", protocol_button:"SOFT TISSUE NECK", cpt:"70486",
-    iv:"none", oral:"none", labs:false, arrival:20, slot:20,
-    notes:"Differentiated thyroid cancer s/p thyroidectomy + remnant ablation, rising thyroglobulin antibodies, negative neck US. Do NOT automatically convert a non-contrast order to contrast.", source:"atrius",
-    special:"IF ORDERED W/O IV CONTRAST, DO NOT CHANGE TO W/ CONTRAST UNLESS CHECKED WITH THE RADIOLOGIST FIRST. No iodinated contrast before RAI treatment. Before any iodinated contrast: verify whether radioiodine imaging or therapy is planned (contrast may affect it). Consult radiologist/endocrinologist if uncertain. If contrast is approved: Neck Soft Tissue CT W/ Contrast (70491) for cervical nodal recurrence + Chest CT with thin-section lung reconstructions (≤1 mm preferred) for pulmonary metastases." },
+  { indication:"Thyroid Cancer Mets / Recurrence Surveillance (Neck) - Rising Tg Antibodies (TgAb), Negative Neck US", category:"head", epic_order:"Neck Soft Tissue CT W/ Contrast", epic_id:"70491", protocol_button:"SOFT TISSUE NECK", cpt:"70491",
+    iv:"with", oral:"none", labs:true, arrival:20, slot:20, lockNote:true,
+    keywords: THYROID_CA_KEYWORDS + ", neck, nodal, lymph node, cervical", requireAny:["thyroid","thyroglobulin","tgab","tg"],
+    notes:"", source:"atrius",
+    special: THYROID_CA_NOTE + "\n\nThis order (Neck W/ IV contrast): cervical nodal recurrence / deep neck disease not visible on ultrasound." },
 
   // â"€â"€ CHEST â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   { indication:"Chest Pain - R/O PE / Pulmonary Embolism / Elevated D-Dimer / Wells Score", category:"chest", epic_order:"Chest CTA PE", epic_id:"71275PE", protocol_button:"CHEST CTA PE", cpt:"71275",
@@ -724,6 +748,12 @@ let protocols = [
   { indication:"Shortness of Breath / SOB - R/O PE", category:"chest", epic_order:"Chest CTA PE", epic_id:"71275PE", protocol_button:"CHEST CTA PE", cpt:"71275",
     iv:"with", oral:"none", labs:true, arrival:20, slot:20,
     notes:"IV contrast CTA.", source:"atrius" },
+
+  { indication:"Thyroid Cancer Mets / Recurrence Surveillance (Chest) - Lung / Pulmonary Metastases", category:"chest", epic_order:"Chest CT W/ Contrast", epic_id:"71260", protocol_button:"ROUTINE", cpt:"71260",
+    iv:"with", oral:"none", labs:true, arrival:20, slot:20, lockNote:true,
+    keywords: THYROID_CA_KEYWORDS + ", chest, lung, lungs, pulmonary, lung mets, pulmonary metastases", requireAny:["thyroid","thyroglobulin","tgab","tg"],
+    notes:"", source:"atrius",
+    special: THYROID_CA_NOTE + "\n\nThis order (Chest W/ IV contrast): thin-section lung reconstructions (≤1 mm preferred) for detection of pulmonary metastases." },
 
   { indication:"Shortness of Breath / SOB - NOT R/O PE / Dyspnea", category:"chest", epic_order:"Chest CT W/O Contrast", epic_id:"71250C", protocol_button:"ROUTINE", cpt:"71250",
     iv:"none", oral:"none", labs:false, arrival:20, slot:20,
@@ -828,7 +858,7 @@ let protocols = [
   { indication:"Weight Loss / Unintentional Weight Loss", category:"chest", epic_order:"Chest/Abdomen/Pelvis CT W/ Contrast", epic_id:"71260CP", protocol_button:"CHEST/ABD/PEL", cpt:"71260 + 74177",
     iv:"with", oral:"yes", labs:true, arrival:60, slot:20,
     notes:"Panel order: Chest W/ Contrast + Abd/Pel W/ Contrast. IV contrast + oral prep per criteria.", source:"atrius", dual_order:true,
-    special:"Use hypervascular protocol if any of the following indications are present: Thyroid Cancer, Carcinoid Tumor, Renal Cell Carcinoma, Hepatoma / HCC, Neuroendocrine Tumor (NET), Melanoma, Choriocarcinoma, Leiomyosarcoma. IV contrast only." },
+    special:"Use hypervascular protocol if any of the following indications are present: Thyroid Cancer, Carcinoid Tumor, Renal Cell Carcinoma, Hepatoma / HCC, Neuroendocrine Tumor (NET), Melanoma, Choriocarcinoma, Leiomyosarcoma. IV contrast only.\n⚠ Thyroid cancer: verify IV contrast is not contraindicated (planned radioiodine imaging or therapy). If ordered W/O IV contrast, do NOT change to W/ contrast unless checked with the radiologist first." },
 
   { indication:"Night Sweats - R/O Adenopathy / Lesion", category:"chest", epic_order:"Chest/Abdomen/Pelvis CT W/ Contrast", epic_id:"71260CP", protocol_button:"CHEST/ABD/PEL", cpt:"71260 + 74177",
     iv:"with", oral:"yes", labs:true, arrival:60, slot:20,
@@ -871,9 +901,9 @@ let protocols = [
     notes:"IV contrast only.", source:"atrius" },
 
   { indication:"Thyroid Cancer", category:"abdomen", epic_order:"Abdomen CT W/ Contrast (Hypervascular Protocol)", epic_id:"74160ABD", protocol_button:"HYPERVASC METS", cpt:"74160",
-    iv:"with", oral:"none", oral_type:"", labs:true, arrival:20, slot:20,
-    notes:"Multiphase IV contrast: arterial + portal venous phase. No oral contrast.", source:"atrius",
-    special:"IF ORDERED W/O IV CONTRAST, DO NOT CHANGE TO W/ CONTRAST UNLESS CHECKED WITH THE RADIOLOGIST FIRST. Hypervascular protocol — select Hypervascular in smartform. Before giving iodinated contrast, verify whether radioiodine imaging or therapy is planned; if so, consult radiologist." },
+    iv:"with", oral:"none", oral_type:"", labs:true, arrival:20, slot:20, lockNote:true,
+    notes:"", keywords:"multiphase arterial portal venous", source:"atrius",
+    special: THYROID_CA_NOTE + "\n\nThis order (Abdomen W/ IV contrast, Hypervascular): multiphase IV contrast, arterial + portal venous phase. No oral contrast. Select Hypervascular in smartform." },
 
   { indication:"Carcinoid Tumor", category:"abdomen", epic_order:"Abdomen CT W/ Contrast (Hypervascular Protocol)", epic_id:"74160ABD", protocol_button:"HYPERVASC METS", cpt:"74160",
     iv:"with", oral:"none", oral_type:"", labs:true, arrival:20, slot:20,
@@ -3095,10 +3125,20 @@ function renderGroup(g) {
     ? 'CTU Indication Guidelines:\nCTU is indicated as INITIAL work-up in HIGH-RISK patients (any of the following):\n  \u2022 Age > 60 yrs (women and men)\n  \u2022 Smoking > 30 pack-years\n  \u2022 Gross hematuria or > 25 RBC/hpf on urinalysis\nCTU is also indicated if hematuria persists after negative retroperitoneal (renal) ultrasound.\nIf the CTU order does not meet criteria for contrast exam, use referral message to contact the ordering clinician using SmartPhrase: .CTU' : '';
   const headCtaNote = (/^Head( \/ Neck)? CTA$/.test(p.epic_order) && !/companion/i.test(infoText))
     ? 'Requires companion Head CT W/O Contrast (obtain first or same visit) — except follow-up of a known intracranial aneurysm (CTA alone).' : '';
-  const displayText = [infoText, headCtaNote, pulmonaryNote, breezaNote, readiCatNote, ctuNote].filter(Boolean).join('\n');
+  // lockNote entries (thyroid cancer): built-in warning always shows first; an admin-saved
+  // card note is appended after it instead of replacing it.
+  const shownInfo = (p.lockNote && customSpecial.hasOwnProperty(cardKey))
+    ? [builtinText, customSpecial[cardKey]].filter(Boolean).join('\n\n') : infoText;
+  const displayText = [shownInfo, headCtaNote, pulmonaryNote, breezaNote, readiCatNote, ctuNote].filter(Boolean).join('\n');
   const sIdx = _specialKeys.push(cardKey) - 1;
+  // Lines starting with ⚠ (thyroid cancer contrast warnings) render in a red alert box above the notes
+  const noteLines = displayText.split('\n');
+  const warnLines = noteLines.filter(l => l.trim().startsWith('⚠'));
+  const restText  = noteLines.filter(l => !l.trim().startsWith('⚠')).join('\n').replace(/^\n+/, '');
+  const warnHtml  = warnLines.length
+    ? `<div class="item-warning">${warnLines.map(l => `<div class="item-warning-line">${l.trim()}</div>`).join('')}</div>` : '';
   const infoHtml = displayText
-    ? `<div class="item-note" style="white-space:pre-line;">${highlightProtocol(displayText)}</div>`
+    ? `${warnHtml}${restText ? `<div class="item-note" style="white-space:pre-line;">${highlightProtocol(restText)}</div>` : ''}`
     : `<div class="item-note" style="color:#94a3b8;font-style:italic;"></div>`;
   const editHtml = `<div class="special-edit-row" id="spedit-${sIdx}">
     <textarea id="sptext-${sIdx}" placeholder="Enter notes and instructions..." rows="3">${infoText}</textarea>
@@ -3491,8 +3531,12 @@ function render() {
   const grid  = document.getElementById('resultsGrid');
   const count = document.getElementById('resultsCount');
   const processed = preprocessSearch(expandAbbreviations(currentSearch));
+  // Misspellings of "thyroid" (thyriod, thryoid, tyroid...) are treated as "thyroid" so the
+  // thyroid cancer contrast warnings and guards still apply. "hyoid" etc. don't start with t.
+  const isThyroidTypo = t => t !== 'thyroid' && t[0] === 't' && t.length >= 5 && t.length <= 9 && editDistance(t, 'thyroid') <= 2;
   const terms = processed.trim().split(/\s+/).filter(Boolean).map(normalize)
-    .filter(t => t.length > 1 && !STOPWORDS.has(t));
+    .filter(t => t.length > 1 && !STOPWORDS.has(t))
+    .map(t => isThyroidTypo(t) ? 'thyroid' : t);
   const isSearching = currentSearch.trim().length > 0;
   const isFiltered  = currentCategory !== 'all';
 
@@ -3564,6 +3608,19 @@ function render() {
       matched = partialMatched.slice(0, 6); // cap at top 6 to avoid noise
       partialUsed = true;
     }
+  }
+
+  // Thyroid cancer guards (all phases):
+  //  - a search containing "thyroid" shows only cards that mention thyroid, so unrelated
+  //    contrast cards (e.g. other cancers' mets staging) don't appear under thyroid mets;
+  //  - thyroid-only entries (requireAny) appear only when the search names thyroid/Tg,
+  //    so a generic "lung mets" search isn't led by thyroid no-contrast cards.
+  if (isSearching) {
+    const termSet = new Set(terms);
+    const mentionsThyroid = p => /\bthyroid\b/i.test([p.indication, p.keywords, p.notes, p.special].join(' '));
+    matched = matched.filter(({ p }) =>
+      (!termSet.has('thyroid') || mentionsThyroid(p)) &&
+      (!p.requireAny || p.requireAny.some(t => termSet.has(t))));
   }
 
   const groups = groupResults(matched, isSearching);
