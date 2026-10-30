@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="build-id" content="20261029-222812">
+<meta name="build-id" content="20261029-223440">
 <title>CT Protocol Guide | Atrius Imaging</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -108,6 +108,7 @@
 
   /* NOTES */
   .item-note  { font-size: 12px; color: #64748b; margin-top: 4px; line-height: 1.5; }
+  .item-wip { background:#fffbeb; border:1px dashed #f59e0b; border-radius:6px; padding:6px 10px; margin:6px 0; font-size:12.5px; color:#92400e; line-height:1.45; }
   .item-maxima { background:#eff6ff; border:1px solid #bfdbfe; border-left:4px solid #2563eb; border-radius:6px; padding:6px 10px; margin:6px 0; font-size:12.5px; color:#1e3a8a; line-height:1.5; }
   .item-maxima b { color:#1d4ed8; }
   .mx-sub { color:#475569; font-size:11.5px; }
@@ -3197,8 +3198,11 @@ function renderGroup(g) {
         : mx.timing;
     maximaHtml = `<div class="item-maxima"><div><b>Contrast:</b> Volume &amp; rate per P3T.${mx.contrast ? ' ' + mx.contrast : ''}</div><div><b>Scan delay:</b> ${timing}</div></div>`;
   }
-  const infoHtml = (displayText || maximaHtml)
-    ? `${warnHtml}${maximaHtml}${restText ? `<div class="item-note" style="white-space:pre-line;">${highlightProtocol(restText)}</div>` : ''}`
+  // Cardiac: protocols (Revolution Vibe, Kenmore only) and a step-by-step scanning guide are being updated
+  const wipHtml = p.category === 'cardiac'
+    ? `<div class="item-wip">&#128679; <b>In the works:</b> cardiac CTA protocols (GE Revolution Vibe, Kenmore only) are being updated, and a step-by-step cardiac scanning guide with pictures is coming soon.</div>` : '';
+  const infoHtml = (displayText || maximaHtml || wipHtml)
+    ? `${wipHtml}${warnHtml}${maximaHtml}${restText ? `<div class="item-note" style="white-space:pre-line;">${highlightProtocol(restText)}</div>` : ''}`
     : `<div class="item-note" style="color:#94a3b8;font-style:italic;"></div>`;
   const editHtml = `<div class="special-edit-row" id="spedit-${sIdx}">
     <textarea id="sptext-${sIdx}" placeholder="Enter notes and instructions..." rows="3">${infoText}</textarea>
