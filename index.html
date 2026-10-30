@@ -691,7 +691,12 @@ let protocols = [
   { indication:"Thyroid Cancer (Pre-Radioactive Iodine Treatment)", category:"head", epic_order:"Neck Soft Tissue CT W/O Contrast", epic_id:"70486MF", protocol_button:"SOFT TISSUE NECK", cpt:"70486",
     iv:"none", oral:"none", labs:false, arrival:20, slot:20,
     notes:"No IV contrast \u2014 iodinated contrast is contraindicated before radioactive iodine therapy. Use non-contrast neck protocol.", source:"atrius",
-    special:"No iodinated contrast before RAI treatment. Confirm with ordering provider if contrast-free neck protocol is appropriate." },
+    special:"No iodinated contrast before RAI treatment. Confirm with ordering provider if contrast-free neck protocol is appropriate. For surveillance with rising Tg antibodies, see Thyroid Cancer Surveillance." },
+
+  { indication:"Thyroid Cancer Surveillance - Rising Tg Antibodies (TgAb) / Negative Neck US / Recurrence", category:"head", epic_order:"Neck Soft Tissue CT W/O Contrast", epic_id:"70486MF", protocol_button:"SOFT TISSUE NECK", cpt:"70486",
+    iv:"none", oral:"none", labs:false, arrival:20, slot:20,
+    notes:"Differentiated thyroid cancer s/p thyroidectomy + remnant ablation, rising thyroglobulin antibodies, negative neck US. Do NOT automatically convert a non-contrast order to contrast.", source:"atrius",
+    special:"Before any iodinated contrast: verify whether radioiodine imaging or therapy is planned (contrast may affect it). Consult radiologist/endocrinologist if uncertain. If contrast is approved: Neck Soft Tissue CT W/ Contrast (70491) for cervical nodal recurrence + Chest CT with thin-section lung reconstructions (≤1 mm preferred) for pulmonary metastases." },
 
   // â"€â"€ CHEST â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   { indication:"Chest Pain - R/O PE / Pulmonary Embolism / Elevated D-Dimer / Wells Score", category:"chest", epic_order:"Chest CTA PE", epic_id:"71275PE", protocol_button:"CHEST CTA PE", cpt:"71275",
@@ -868,7 +873,7 @@ let protocols = [
   { indication:"Thyroid Cancer", category:"abdomen", epic_order:"Abdomen CT W/ Contrast (Hypervascular Protocol)", epic_id:"74160ABD", protocol_button:"HYPERVASC METS", cpt:"74160",
     iv:"with", oral:"none", oral_type:"", labs:true, arrival:20, slot:20,
     notes:"Multiphase IV contrast: arterial + portal venous phase. No oral contrast.", source:"atrius",
-    special:"Hypervascular protocol — select Hypervascular in smartform." },
+    special:"Hypervascular protocol — select Hypervascular in smartform. Before giving iodinated contrast, verify whether radioiodine imaging or therapy is planned; if so, consult radiologist." },
 
   { indication:"Carcinoid Tumor", category:"abdomen", epic_order:"Abdomen CT W/ Contrast (Hypervascular Protocol)", epic_id:"74160ABD", protocol_button:"HYPERVASC METS", cpt:"74160",
     iv:"with", oral:"none", oral_type:"", labs:true, arrival:20, slot:20,
@@ -2658,6 +2663,8 @@ const CLINICAL_ABBREVIATIONS = [
   { abbrev: 'hht',     expand: 'hereditary hemorrhagic telangiectasia' },
   { abbrev: 'ivc',     expand: 'inferior vena cava thrombosis' },
   { abbrev: 'rai',     expand: 'radioactive iodine thyroid' },
+  { abbrev: 'tgab',    expand: 'thyroid cancer surveillance tg antibodies' },
+  { abbrev: 'dtc',     expand: 'thyroid cancer surveillance' },
   { abbrev: 'acc',     expand: 'adrenal carcinoma' },
   { abbrev: 'mako',    expand: 'knee hip pre-op planning' },
   { abbrev: 'conformis', expand: 'knee custom implant' },
